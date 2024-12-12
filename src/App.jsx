@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import './App.css';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Login from './components/Login';
+import Signup from './components/Signup';
+import BillSplitter from './components/BillSplitter';
+import { Toaster } from 'react-hot-toast'
+import Landing from './components/Landing';
+import AmountToPayHandler from './components/AmountToPayHandler';
+import AmountToTakeHandler from './components/AmountToTakeHandler';
+import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [transaction, settransaction] = useState([])
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Analytics />
+      <div><Toaster position="top-right" toastOptions={{
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        }
+      }} /></div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Home transaction={transaction} settransaction={settransaction} />}>
+            <Route index element={<AmountToTakeHandler transaction={transaction} settransaction={settransaction} />} />
+            <Route path="amounttopay" element={<AmountToPayHandler />} />
+          </Route>
+          <Route exact path="/home" element={<Landing />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/signup" element={<Signup />} />
+          <Route exact path="/billsplit" element={<BillSplitter />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
 
-export default App
+export default App;
